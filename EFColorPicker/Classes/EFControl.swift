@@ -32,7 +32,7 @@ public class EFControl: UIControl {
     var hitTestEdgeInsets: UIEdgeInsets = UIEdgeInsets.zero
 
     override public func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        if UIEdgeInsetsEqualToEdgeInsets(self.hitTestEdgeInsets, UIEdgeInsets.zero)
+        if self.hitTestEdgeInsets == UIEdgeInsets.zero
             || !self.isEnabled
             || self.isHidden
             || !self.isUserInteractionEnabled
