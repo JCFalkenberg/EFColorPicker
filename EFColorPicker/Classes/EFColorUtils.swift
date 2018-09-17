@@ -207,14 +207,6 @@ func EFHexStringFromColor(color: UIColor) -> String? {
         blue = components[2].clamped(to: colorComponentValueRange)
         alpha = components[3].clamped(to: colorComponentValueRange)
     }
-    if red < 0 { red = 0 }
-    if red > 1 { red = 1 }
-    if blue < 0 { blue = 0 }
-    if blue > 1 { blue = 1 }
-    if green < 0 { green = 0 }
-    if green > 1 { green = 1 }
-    if alpha < 0 { alpha = 0 }
-    if alpha > 1 { alpha = 1 }
 
     return String(
         format: "#%02lX%02lX%02lX%02lX",
