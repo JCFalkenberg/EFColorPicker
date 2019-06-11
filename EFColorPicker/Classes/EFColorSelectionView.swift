@@ -25,6 +25,7 @@
 //  THE SOFTWARE.
 
 import Foundation
+import UIKit
 
 // The enum to define the EFColorView's types.
 public enum EFSelectedColorView: Int {
@@ -113,13 +114,16 @@ public class EFColorSelectionView: UIView, EFColorView, EFColorViewDelegate {
     }
 
     // MARK:- FBColorViewDelegate methods
-    public func colorView(colorView: EFColorView, didChangeColor color: UIColor) {
+    public func colorView(_ colorView: EFColorView, didChangeColor color: UIColor) {
         self.color = color
-        self.delegate?.colorView(colorView: self, didChangeColor: self.color)
+        self.delegate?.colorView(self, didChangeColor: self.color)
     }
 
     // MARK:- Private
     private func ef_init() {
+        if #available(iOS 11.0, *) {
+            self.accessibilityIgnoresInvertColors = true
+        }
         self.accessibilityLabel = "color_selection_view"
 
         if #available(iOS 13.0, *) {

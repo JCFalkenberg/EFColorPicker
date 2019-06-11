@@ -29,6 +29,9 @@ import CoreGraphics
 
 // The color wheel view.
 public class EFColorWheelView: UIControl {
+    
+    var isTouched = false
+    var wheelImage: CGImage?
 
     // The hue value.
     var hue: CGFloat = 0.0 {
@@ -50,7 +53,9 @@ public class EFColorWheelView: UIControl {
     var brightness: CGFloat = 1.0 {
         didSet {
             self.setSelectedPoint(point: ef_selectedPoint())
-            self.setNeedsDisplay()
+            if oldValue != brightness {
+                drawWheelImage()
+            }
         }
     }
 
@@ -94,6 +99,7 @@ public class EFColorWheelView: UIControl {
     }
 
     override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.isTouched = true
         if let position: CGPoint = touches.first?.location(in: self) {
             self.onTouchEventWithPosition(point: position)
         }
@@ -106,6 +112,7 @@ public class EFColorWheelView: UIControl {
     }
 
     override public func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.isTouched = false
         if let position: CGPoint = touches.first?.location(in: self) {
             self.onTouchEventWithPosition(point: position)
         }
@@ -137,6 +144,19 @@ public class EFColorWheelView: UIControl {
 
     // MARK:- CALayerDelegate methods
     override public func display(_ layer: CALayer) {
+        guard wheelImage == nil else { return }
+        drawWheelImage()
+    }
+
+    override public func layoutSublayers(of layer: CALayer) {
+        if layer == self.layer {
+            self.setSelectedPoint(point: self.ef_selectedPoint())
+            self.layer.setNeedsDisplay()
+        }
+    }
+
+    // MARK:- Private methods
+    private func drawWheelImage() {
         let dimension: CGFloat = min(self.frame.width, self.frame.height)
         guard let bitmapData = CFDataCreateMutable(nil, 0) else {
             return
@@ -148,18 +168,11 @@ public class EFColorWheelView: UIControl {
             withSize: CGSize(width: dimension, height: dimension)
         )
         if let image = self.ef_imageWithRGBAData(data: bitmapData, width: Int(dimension), height: Int(dimension)) {
-            self.layer.contents = image
+            wheelImage = image
+            self.layer.contents = wheelImage
         }
     }
 
-    override public func layoutSublayers(of layer: CALayer) {
-        if layer == self.layer {
-            self.setSelectedPoint(point: self.ef_selectedPoint())
-            self.layer.setNeedsDisplay()
-        }
-    }
-
-    // MARK:- Private methods
     private func ef_selectedPoint() -> CGPoint {
         let dimension: CGFloat = min(self.frame.width, self.frame.height)
 
